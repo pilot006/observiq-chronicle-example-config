@@ -1,0 +1,1 @@
+# observiq-chronicle-example-config
