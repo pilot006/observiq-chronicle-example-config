@@ -1,0 +1,47 @@
+receivers:
+  # The name format is <receiver>/<some name>
+  windowseventlog/sysmon:
+    channel: Microsoft-Windows-Sysmon/Operational
+    raw: true
+  windowseventlog/security:
+    channel: security
+    raw: true
+  windowseventlog/application:
+    channel: application
+    raw: true
+  windowseventlog/system:
+    channel: system
+    raw: true
+
+processors:
+  batch:
+
+exporters:
+  chronicle/sysmon:
+    endpoint: https://malachiteingestion-pa.googleapis.com
+    creds: '<YOUR INGESTION V2 JSON WITHOUT NEWLINES>' 
+    log_type: 'WINDOWS_SYSMON'
+    override_log_type: false
+    raw_log_field: body
+    customer_id: '<YOUR CUSTOMER ID>'
+  chronicle/winevtlog:
+    endpoint: https://malachiteingestion-pa.googleapis.com
+    creds: '<YOUR INGESTION V2 JSON WITHOUT NEWLINES>'
+    log_type: 'WINEVTLOG'
+    override_log_type: false
+    raw_log_field: body
+    customer_id: '<YOUR CUSTOMER ID>'
+
+service:
+  pipelines:
+    logs/sysmon:
+      receivers: [windowseventlog/sysmon]
+      processors: [batch]
+      exporters: [chronicle/sysmon]
+    logs/winevtlog:
+      receivers: 
+        - windowseventlog/security
+        - windowseventlog/application
+        - windowseventlog/system
+      processors: [batch]
+      exporters: [chronicle/winevtlog]
