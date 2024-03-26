@@ -1,0 +1,49 @@
+receivers:
+  # Sysmon logs are extracted from journald
+  journald/sysmon:
+    directory: /var/log/journal
+    units:
+      - sysmon
+
+  # This collects from the auditd log file
+  filelog/custom_files:
+    include:
+      - /var/log/audit/audit.log
+
+processors:
+  batch:
+
+  # This transform is used for sysmon logs to send just the XML payload with no additional details
+  transform:
+    error_mode: ignore
+    log_statements:
+      - context: log
+        statements:
+          - set(body, body["MESSAGE"])
+
+exporters:
+  chronicle/auditd:
+    endpoint: https://malachiteingestion-pa.googleapis.com
+    creds: '<YOUR INGESTION V2 JSON WITHOUT NEWLINES>'
+    log_type: 'AUDITD'
+    override_log_type: false
+    raw_log_field: body
+    customer_id: '<YOUR CUSTOMER ID>'
+  chronicle/sysmon:
+    endpoint: https://malachiteingestion-pa.googleapis.com
+    creds: '<YOUR INGESTION V2 JSON WITHOUT NEWLINES>'
+    log_type: 'LINUX_SYSMON'
+    override_log_type: false
+    raw_log_field: body
+    customer_id: '<YOUR CUSTOMER ID>'
+
+service:
+  pipelines:
+    logs/auditd:
+      receivers: [filelog/custom_files]
+      processors: [batch]
+      exporters: [chronicle/auditd]
+    logs/sysmon:
+      receivers: [journald/sysmon]
+      processors: [transform,batch]
+      exporters: [chronicle/sysmon]
