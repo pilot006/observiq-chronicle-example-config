@@ -1,4 +1,4 @@
-# observiq-chronicle-example-config
+# Example Configurations for ObservIQ Bindplane OpenTelemetry + Google Chronicle
 
 Example 'config.yaml' configurations for bringing events in to Chronicle Security Operations leveraging BindPlane ObservIQ OpenTelemetry agents.
 
