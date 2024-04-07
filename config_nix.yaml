@@ -23,14 +23,14 @@ processors:
 
 exporters:
   chronicle/auditd:
-    endpoint: https://malachiteingestion-pa.googleapis.com
+    endpoint: malachiteingestion-pa.googleapis.com
     creds: '<YOUR INGESTION V2 JSON WITHOUT NEWLINES>'
     log_type: 'AUDITD'
     override_log_type: false
     raw_log_field: body
     customer_id: '<YOUR CUSTOMER ID>'
   chronicle/sysmon:
-    endpoint: https://malachiteingestion-pa.googleapis.com
+    endpoint: malachiteingestion-pa.googleapis.com
     creds: '<YOUR INGESTION V2 JSON WITHOUT NEWLINES>'
     log_type: 'LINUX_SYSMON'
     override_log_type: false
