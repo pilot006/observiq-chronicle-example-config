@@ -18,14 +18,14 @@ processors:
 
 exporters:
   chronicle/sysmon:
-    endpoint: https://malachiteingestion-pa.googleapis.com
+    endpoint: malachiteingestion-pa.googleapis.com
     creds: '<YOUR INGESTION V2 JSON WITHOUT NEWLINES>' 
     log_type: 'WINDOWS_SYSMON'
     override_log_type: false
     raw_log_field: body
     customer_id: '<YOUR CUSTOMER ID>'
   chronicle/winevtlog:
-    endpoint: https://malachiteingestion-pa.googleapis.com
+    endpoint: malachiteingestion-pa.googleapis.com
     creds: '<YOUR INGESTION V2 JSON WITHOUT NEWLINES>'
     log_type: 'WINEVTLOG'
     override_log_type: false
