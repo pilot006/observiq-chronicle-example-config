@@ -1,0 +1,39 @@
+receivers:
+  netflow:
+    hostname: "0.0.0.0"
+    scheme: netflow
+    port: 555
+    sockets: 16
+    workers: 32
+exporters:
+    chronicle/Google_SecOps_-_DataPlane:
+        compression: none
+        creds: '<YOUR INGESTION V2 JSON>'
+        customer_id: <YOUR TENANT ID>
+        endpoint: chronicle.googleapis.com
+        forwarder: <YOUR FORWARDER ID>
+        location: us
+        log_type: 'UDM'
+        namespace: null
+        project: <YOUR SECOPS GCP PROJECT ID>
+        protocol: https
+        raw_log_field: body
+processors:
+    transform/move:
+        error_mode: ignore
+        log_statements:
+            - context: log
+              statements:
+                - set(cache["move_field"], attributes) where true
+                - keep_keys(attributes, []) where true
+                - set(body, cache["move_field"]) where cache["move_field"] != nil
+                - delete_key(cache, "move_field") where cache["move_field"] != nil
+service:
+    pipelines:
+        logs/NETFLOW__SECOPS:
+            receivers:
+                - netflow
+            processors:
+                - transform/move
+            exporters:
+                - chronicle/Google_SecOps_-_DataPlane
